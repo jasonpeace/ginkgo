@@ -1,0 +1,7 @@
+.env.dev
+*.py
+env/
+__pycache__/
+*.pdf
+__pycache__/
+*.swp
