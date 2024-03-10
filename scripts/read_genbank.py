@@ -68,27 +68,33 @@ def snp_test():
         test_seq = origin_seq[
             1408 - 1 : 1539 - 1
         ]  # note Biopython's location indexes appear to not be zero based
+        
         test_seq = test_seq.upper()
-        # origin_seq = str(gb_record.seq)
+        origin_seq = str(gb_record.seq)
 
-        idx = gb_record.seq.find(test_seq)
-        for feature in gb_record.features:
-            
-            if idx in feature:
-                if "protein_id" in feature.qualifiers:
-                    print("Starts in protein region:")
-                    print(
-                        "%s %s" % (feature.type, feature.qualifiers.get("protein_id"))
-                    )
-            
-            start = feature.location.start -1
-            end = feature.location.end -1
-            if idx >= start and idx+len(test_seq) <= end:
-                if "protein_id" in feature.qualifiers:
-                        print("Starts and ends in protein region:")
+        #idx = gb_record.seq.find(test_seq)
+        #idxs = [idx]
+
+        # find all indexes where the test sequence match, not just the first
+        idxs = [i for i in range(len(origin_seq)) if origin_seq.startswith(test_seq, i)]
+        for idx in idxs:
+            for feature in gb_record.features:
+                
+                if idx in feature:
+                    if "protein_id" in feature.qualifiers:
+                        print("Starts in protein region:")
                         print(
                             "%s %s" % (feature.type, feature.qualifiers.get("protein_id"))
-                        )    
+                        )
+                
+                start = feature.location.start -1
+                end = feature.location.end -1
+                if idx >= start and idx+len(test_seq) <= end:
+                    if "protein_id" in feature.qualifiers:
+                            print("Starts and ends in protein region:")
+                            print(
+                                "%s %s" % (feature.type, feature.qualifiers.get("protein_id"))
+                            )    
 
 
 def location_test():
