@@ -1,5 +1,6 @@
 from Bio import SeqIO, Align
 from Bio.Seq import Seq
+from Bio.SeqFeature import SeqFeature, SimpleLocation
 
 aligner = Align.PairwiseAligner(match_score=1.0)
 aligner.mode = "local"
@@ -109,6 +110,7 @@ def location_test():
     #                  /db_xref="GeneID:10971237"
     #                  /translation="MGSAPLRPKSLHSATLRGLLRAPLRSATLRSASELRLPVVIVI"
     gb_file = "../genome_genbank_files/NC_000852.gb"
+    translated = "MGSAPLRPKSLHSATLRGLLRAPLRSATLRSASELRLPVVIVI"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
         origin_seq = str(gb_record.seq)
         test_seq = origin_seq[
@@ -116,14 +118,21 @@ def location_test():
         ]  # note Biopython's location indexes appear to not be zero based
         test_rna = Seq(test_seq).transcribe()
         test_p = test_rna.translate()
-        print("REAL: MGSAPLRPKSLHSATLRGLLRAPLRSATLRSASELRLPVVIVI")
+        print("REAL: {}".format(translated))
+        print("slicing:")
         print(" GOT: {}".format(str(test_p)))
-        (
-            print("MATCH!")
-            if test_p == "MGSAPLRPKSLHSATLRGLLRAPLRSATLRSASELRLPVVIVI"
-            else print("NO match")
-        )
+        (print("MATCH!") if test_p == translated else print("NO match"))
+
+        print("Using SimpleLocation")
+        feature = SeqFeature(
+            SimpleLocation(1408 - 1, 1539 - 1, strand=1), type="CDS"
+        )  # note still need to -1 the indexes, shouldn't be necessary if you use location.start location.end
+        test_seq2 = feature.extract(gb_record.seq)
+        test_rna2 = test_seq2.transcribe()
+        test_p2 = test_rna2.translate()
+        print(" GOT: {}".format(str(test_p2)))
+        (print("MATCH!") if test_p2 == translated else print("NO match"))
 
 
 if __name__ == "__main__":
-    snp_test()
+    location_test()
