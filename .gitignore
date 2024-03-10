@@ -1,7 +1,6 @@
 .env.dev
-*.py
+*.pyc
 env/
 __pycache__/
 *.pdf
-__pycache__/
 *.swp
