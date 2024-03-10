@@ -1,7 +1,7 @@
 from Bio import SeqIO, Align
 from Bio.Seq import Seq
 
-aligner = Align.PairwiseAligner(match_score = 1.0)
+aligner = Align.PairwiseAligner(match_score=1.0)
 aligner.mode = "local"
 
 
@@ -22,23 +22,22 @@ def parse_CDS_data(gb_record):
                         location.strand,
                     )
                 )
-    
+
 
 def align_test():
     gb_file = "../genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
         parse_CDS_data(gb_record)
 
-        # print the origin/full sequence out            
+        # print the origin/full sequence out
         # print("Origin: {}".format(str(gb_record.seq)))
-
 
         test_seq = "ggtgggattgacagtggtaaatgtgttgac".upper()
         origin_seq = str(gb_record.seq)
 
-        #test_seq = "AGAACTC"
-        #origin_seq = "GAACT"
-        try: 
+        # test_seq = "AGAACTC"
+        # origin_seq = "GAACT"
+        try:
             score = aligner.score(test_seq, origin_seq)
 
             print("Score: {}".format(score))
@@ -53,28 +52,43 @@ def align_test():
         except:
             print("ORIGIN: {}".format(origin_seq))
             print("Test: {}".format(test_seq))
-        
 
-        #for alignment in alignments:
+        # for alignment in alignments:
         #    print(alignment)
+
 
 def snp_test():
     gb_file = "../genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
-        #parse_CDS_data(gb_record)
+        # parse_CDS_data(gb_record)
 
-        # print the origin/full sequence out            
+        # print the origin/full sequence out
         # print("Origin: {}".format(str(gb_record.seq)))
         origin_seq = str(gb_record.seq)
-        test_seq = origin_seq[1408-1:1539-1] # note Biopython's location indexes appear to not be zero based
+        test_seq = origin_seq[
+            1408 - 1 : 1539 - 1
+        ]  # note Biopython's location indexes appear to not be zero based
         test_seq = test_seq.upper()
-        #origin_seq = str(gb_record.seq)
+        # origin_seq = str(gb_record.seq)
 
         idx = gb_record.seq.find(test_seq)
         for feature in gb_record.features:
+            
             if idx in feature:
-                if "protein_id" in feature.qualifiers: 
-                    print("%s %s" % (feature.type, feature.qualifiers.get("protein_id")))
+                if "protein_id" in feature.qualifiers:
+                    print("Starts in protein region:")
+                    print(
+                        "%s %s" % (feature.type, feature.qualifiers.get("protein_id"))
+                    )
+            
+            start = feature.location.start -1
+            end = feature.location.end -1
+            if idx >= start and idx+len(test_seq) <= end:
+                if "protein_id" in feature.qualifiers:
+                        print("Starts and ends in protein region:")
+                        print(
+                            "%s %s" % (feature.type, feature.qualifiers.get("protein_id"))
+                        )    
 
 
 def location_test():
@@ -89,14 +103,14 @@ def location_test():
     gb_file = "../genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
         origin_seq = str(gb_record.seq)
-        test_seq = origin_seq[1408-1:1539-1] # note Biopython's location indexes appear to not be zero based
+        test_seq = origin_seq[
+            1408 - 1 : 1539 - 1
+        ]  # note Biopython's location indexes appear to not be zero based
         test_rna = Seq(test_seq).transcribe()
         test_p = test_rna.translate()
         print("REAL: MGSAPLRPKSLHSATLRGLLRAPLRSATLRSASELRLPVVIVI")
         print(" GOT: {}".format(str(test_p)))
 
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     snp_test()
-
