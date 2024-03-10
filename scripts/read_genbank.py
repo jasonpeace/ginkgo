@@ -68,7 +68,7 @@ def snp_test():
         origin_seq = str(gb_record.seq)
         test_seq = origin_seq[
             1408 - 1 : 1539 - 1
-        ]  # note Biopython's location indexes appear to not be zero based
+        ]  # note genbank's location indexes appear to not be zero based
 
         test_seq = test_seq.upper()
         origin_seq = str(gb_record.seq)
@@ -115,7 +115,7 @@ def location_test():
         origin_seq = str(gb_record.seq)
         test_seq = origin_seq[
             1408 - 1 : 1539 - 1
-        ]  # note Biopython's location indexes appear to not be zero based
+        ]  # note genbank's location indexes appear to not be zero based
         test_rna = Seq(test_seq).transcribe()
         test_p = test_rna.translate()
         print("REAL: {}".format(translated))
