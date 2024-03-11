@@ -21,5 +21,14 @@ from . import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+
+    #homepage returns a react component that works as a SPA
     path("", views.home, name="home"),
+
+    #below endpoints act as API endpoints and return JSON
+    path("request", views.new_request, name="new_request"),
+    path("requests", views.get_requests, name="get_requests"),
+    path("status/<int:alignment_request_id>", views.status, name="status"),
+    path("detail/<int:alignment_request_id>", views.alignment_detail, name="alignment_detail")
+
 ]

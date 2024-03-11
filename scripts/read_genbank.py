@@ -1,9 +1,8 @@
 from Bio import SeqIO, Align
 from Bio.Seq import Seq
 from Bio.SeqFeature import SeqFeature, SimpleLocation
-
-aligner = Align.PairwiseAligner(match_score=1.0)
-aligner.mode = "local"
+import sys
+from Bio.Align import AlignInfo
 
 
 def parse_CDS_data(gb_record):
@@ -25,7 +24,45 @@ def parse_CDS_data(gb_record):
                 )
 
 
+def align_on_protein():
+    aligner = Align.PairwiseAligner(match_score=1.0, mode="global")
+    gb_file = "../genome_genbank_files/NC_000852.gb"
+    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
+        for feature in gb_record.features:
+            protein_dna_seq = feature.extract(gb_record.seq)
+            test_dna = "ggtgggattgacagtggtaaatgtgttgac".upper()
+
+            # print("Protein DNA: {}".format(str(protein_dna_seq)))
+            # print("Test DNA: {}".format(test_dna))
+
+            score = aligner.score(str(protein_dna_seq), test_dna)
+            print("Score: {}".format(score))
+            alignments = aligner.align(str(protein_dna_seq), test_dna)
+            # import pdb;
+            # pdb.set_trace()
+
+
+
+
+
+def score_test():
+    
+    dna1 = "ATATATATATATATATATGTATAT"
+    dna2 = "AT"
+    aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
+    aligner.open_gap_score = -10.0
+    score = aligner.score(dna1, dna2)
+    print(score)
+    alignments = aligner.align(dna1, dna2)
+    print("Number of alignments: {}".format(len(alignments)))
+    for alignment in alignments:
+        #a = alignment[1, :]
+        #if "-" not in a: #dumb but weeds out alignments with gaps
+        print(alignment)
+
+
 def align_test():
+    aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
     gb_file = "../genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
         parse_CDS_data(gb_record)
@@ -37,17 +74,18 @@ def align_test():
         origin_seq = str(gb_record.seq)
 
         # test_seq = "AGAACTC"
-        # origin_seq = "GAACT"
+        # origin_seq = "ggtgggattgacagtggtaaatgtgttgac".upper()
         try:
-            score = aligner.score(test_seq, origin_seq)
+            score = aligner.score(origin_seq, test_seq)
 
             print("Score: {}".format(score))
 
-            alignments = aligner.align(test_seq, origin_seq)
+            alignments = aligner.align(origin_seq, test_seq)
 
-            alignment = alignments[0]
-            indices = alignment.indices[0]
-            print("Location: [{}..{}]".format(indices[0], indices[-1]))
+            for a in alignments:
+                print(a)
+            # indices = alignment.indices[0]
+            # print("Location: [{}..{}]".format(indices[0], indices[-1]))
 
             print(alignment)
         except:
@@ -99,6 +137,25 @@ def snp_test():
                             % (feature.type, feature.qualifiers.get("protein_id"))
                         )
 
+def score_hit_test():
+    gb_file = "../genome_genbank_files/NC_000852.gb"
+    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
+        origin_seq = str(gb_record.seq)
+        test_seq = origin_seq[
+            1408 - 1 : 1539 - 1
+        ]
+        test_seq = test_seq.upper()
+        origin_seq = str(gb_record.seq)
+        max_score = len(test_seq)
+        aligner = Align.PairwiseAligner(match_score=max_score, mode="local")
+
+            
+    dna1 = "ATATATATATATATATATGTATAT"
+    dna2 = "TGT"
+    score = aligner.score(dna1, dna2)
+    print(score)
+
+
 
 def location_test():
     #   CDS             1408..1539
@@ -134,5 +191,44 @@ def location_test():
         (print("MATCH!") if test_p2 == translated else print("NO match"))
 
 
+def aligntest():
+    aligner = Align.PairwiseAligner()
+    aligner.mode = "local"
+    aligner.open_gap_score = -10
+    #aligner.extend_gap_score = -0.5
+    # aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
+    gb_file = "../genome_genbank_files/NC_000852.gb"
+    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
+        for feature in gb_record.features:
+            if "protein_id" in feature.qualifiers:
+                protein_dna_seq = feature.extract(gb_record.seq)
+                test_dna = str(protein_dna_seq)[
+                    len(str(protein_dna_seq)) // 2 : len(str(protein_dna_seq)) 
+                ]  # half the dna seq
+                score = aligner.score(str(protein_dna_seq), test_dna)
+                print("Score: {}".format(score))
+                alignments = aligner.align(str(protein_dna_seq), test_dna)
+                print("Num alignments: {}".format(len(alignments)))
+            
+                # no_gap_alignment = find_first_no_gap(alignments)
+                # if no_gap_alignment:
+
+                # print("--------------------------------------------------------------------------------")
+                # print(protein_dna_seq)
+                # print(test_dna)
+                # print(alignments[0])
+                # print("--------------------------------------------------------------------------------")
+
+                
+  
+def find_first_no_gap(alignments):
+    for idx, alignment in enumerate(alignments):
+        a = alignment[1, :]
+        if "-" not in a: #dumb but weeds out alignments with gaps
+            print("INDEX:{}".format(idx))
+            return alignment
+
+
 if __name__ == "__main__":
-    location_test()
+    score_test()
+
