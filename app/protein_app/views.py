@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse
-from protein_search.models import AlignmentRequest, AlignmentResult
+from protein_app.models import AlignmentRequest, AlignmentResult
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -71,3 +71,4 @@ def alignment_detail(request, alignment_request_id=-1):
         }
 
     return HttpResponse(json.dumps(data), content_type="application/json")
+

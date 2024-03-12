@@ -1,5 +1,5 @@
 """
-URL configuration for protein_search project.
+URL configuration for protein_project project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.0/topics/http/urls/
@@ -16,20 +16,9 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
-from . import views
+from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-
-    #homepage returns a react component that works as a SPA
-    path("", views.home, name="home"),
-    path("detail/<int:id>", views.home, name="home"),
-
-    #below endpoints act as API endpoints and return JSON
-    path("api/request", views.new_request, name="new_request"),
-    path("api/requests", views.get_requests, name="get_requests"),
-    path("api/status/<int:alignment_request_id>", views.status, name="status"),
-    path("api/detail/<int:alignment_request_id>", views.alignment_detail, name="alignment_detail")
-
+    path('', include('protein_app.urls')),
 ]
