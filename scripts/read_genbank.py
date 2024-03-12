@@ -46,19 +46,34 @@ def align_on_protein():
 
 
 def score_test():
-    
-    dna1 = "ATATATATATATATATATGTATAT"
-    dna2 = "AT"
+    query = "ATGGTTCACAATTGCAAAAGTATATTCACTGCAGCAGAAAATGGCCACGACGTTTGTTTGAAAACGCTCATTGAAGCAGGTGCCCCCTTTGACAACGTCGGTGATTCAGGGTGGACCGCGTTGCATTACGCGATTCATTATGATCATACTGCGTGCGTAAAGATGCTCATTGATGCGGGTGCAAATATTGACATCACAGATAATTCGGGATGCACACCACTTCATCGTGCGGTTTTTAATGGCCATGATGCATGTGTGAAGCTGCTCGTCGAAGCAGGTGCAACTCTTGACGTCATTGATGATACTGGAACCATGCCACTGCATCACGCAGTTTATTATGGTTATGATGCATGCGTAAAGATGCTCATAGAGGCAGGTGCCGGTCTTAACATCGACGGTGATGGGTATGCACCGTTACATTACGCGGTTTATAAAGGTCACGATGTGTGTGTGAAGCTGCTCGTCGAAGCCGGTGCACCCCTTGACATCACAGATATTTCGGGATGCACACCACTTCATCGTGCGGTTTTTAATGGCCACGATGCATGTGCGAGCATGTTAGTCAACAAGATCGTTTCGGAGCGGCCGTTGCGTCCGAGTGAGTTGTGTGTCATACCACAAACATCTGCTGTATTAGGTGATGTGTTGCGAACGACGATGCAGCTTCATGGGCGATCGGAAGCTGCAAAGATCACAGCGCATCTTCCTGTGGGCGCAAGGGATACTCTGCGGACTACTATGCTGTGTTTGAACAGGACCATGGTCCCGAGAGACCTCATTGACAGCATAGTACTCCAATGTGTGTA"
     aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
     aligner.open_gap_score = -10.0
-    score = aligner.score(dna1, dna2)
-    print(score)
-    alignments = aligner.align(dna1, dna2)
-    print("Number of alignments: {}".format(len(alignments)))
-    for alignment in alignments:
-        #a = alignment[1, :]
-        #if "-" not in a: #dumb but weeds out alignments with gaps
-        print(alignment)
+    gb_file = "../genome_genbank_files/NC_014637.gb"
+    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
+        for feature in gb_record.features:
+            if "protein_id" in feature.qualifiers:
+                target = feature.extract(gb_record.seq)
+                score = aligner.score(target, query)
+                print(score)
+                alignments = aligner.align(target, query)
+                num_alignments = len(alignments)
+                print("Number of alignments: {}".format(num_alignments))
+                if num_alignments == 1 and is_exact_match(alignments[0]):
+                    test = is_no_gap_alignment(alignments[0])
+                    print("Found a match!")
+                    print("Protein ID: {} ".format(feature.qualifiers['protein_id']))
+                    print("Alignment:{}".format(str(alignments[0])))
+                    print("Score {}".format(score))
+                    print("length of query {}".format(len(query)))
+                    return(feature.qualifiers['protein_id'])
+
+def is_exact_match(alignment):
+    a = alignment[1, :]
+    b = alignment[0, :]
+    import pdb
+    pdb.set_trace()
+    return a==b
 
 
 def align_test():
@@ -96,6 +111,17 @@ def align_test():
         #    print(alignment)
 
 
+def grab_a_protein_snp():
+    gb_file = "../genome_genbank_files/NC_000852.gb"
+    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
+        origin_seq = str(gb_record.seq)
+        test_seq = origin_seq[
+            2288-1: 3094 -1
+        ]
+        test_seq = test_seq.upper()
+        
+
+
 def snp_test():
     gb_file = "../genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
@@ -109,6 +135,7 @@ def snp_test():
         ]  # note genbank's location indexes appear to not be zero based
 
         test_seq = test_seq.upper()
+        
         origin_seq = str(gb_record.seq)
 
         # idx = gb_record.seq.find(test_seq)

@@ -3,6 +3,7 @@ from protein_app.models import AlignmentRequest, AlignmentResult
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 import json
+from .tasks import find_first_match
 
 
 def home(request, id=0):
@@ -41,10 +42,12 @@ def alignment_requests_dto(alignment_requests):
 def new_request(request):
     if request.method == "POST":
         data = json.loads(request.body)
+        dna_string = data["dna_string"]
         alignment_request = AlignmentRequest(
-            dna_string=data["dna_string"], status="new"
+            dna_string=dna_string, status="new"
         )
         alignment_request.save()
+        find_first_match.delay(dna_string,'/user/src/app/genome_genbank_files' )
         ar = json.dumps(alignment_request_dto(alignment_request))
         return HttpResponse(ar, content_type="application/json")
     return HttpResponse("nothing to do")
