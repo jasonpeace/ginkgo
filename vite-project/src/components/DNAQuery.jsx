@@ -1,22 +1,32 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import Stack from "react-bootstrap/Stack";
 import Table from "react-bootstrap/Table";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import React from "react";
+import { useInterval } from "useHooks-ts";
 import "./DNAQuery.css";
 
-
-
 function DNAQuery() {
-    const [newDNAQuery, setNewDNAQuery] = useState();
-    const [alignmentRequests, setAlignmentRequests] = useState([]);
+  const [newDNAQuery, setNewDNAQuery] = useState();
+  const [alignmentRequests, setAlignmentRequests] = useState([]);
+
+  //Fetch the initial data for the DNA Query Table
   useEffect(() => {
     fetch_all_alignment_requests();
   }, []);
 
+  //This hook will call the fetch function every 30 seconds to update
+  //the submitted DNA Query Table
+  useInterval(() => {
+    fetch_all_alignment_requests();
+  }, 30000);
+
+  //Fetches the data for the DNA Query Table. Note there is no pagination or filtering
   function fetch_all_alignment_requests() {
-    fetch("http://127.0.0.1:8000/api/requests", {
+    fetch("/api/requests", {
       method: "GET",
     })
       .then((response) => response.json())
@@ -28,11 +38,16 @@ function DNAQuery() {
 
   function handleNewDNAQuery(event) {
     const data = event.target.value;
-    setNewDNAQuery(data);
+    limited_data = extract(data, "[actgACTG]+");
+    setNewDNAQuery(limited_data);
   }
 
+  const extract = (str, pattern) => (str.match(pattern) || []).pop() || "";
+
+  //When the user hits submit, this takes the DNA query and sends it to the backend.
+  //This will refresh the DNA Query Table.
   const handleSubmit = () => {
-    fetch("http://127.0.0.1:8000/api/request", {
+    fetch("/api/request", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -41,6 +56,7 @@ function DNAQuery() {
       body: JSON.stringify({ dna_string: newDNAQuery }),
     })
       .then(function (res) {
+        setNewDNAQuery("");
         fetch_all_alignment_requests();
         console.log(res);
       })
@@ -50,49 +66,68 @@ function DNAQuery() {
   };
 
   return (
-    <Stack gap={3}>
-      <Stack gap={3}>
-        <label>Please enter your DNA query in the text field below.</label>
-        <textarea
-          name="DNAQueryForm"
-          onChange={handleNewDNAQuery}
-          value={newDNAQuery}
-          className="dna-query"
-        />
-        <Button onClick={handleSubmit}>Submit DNA</Button>
-      </Stack>
+    <>
+      <Container>
+        <Row>
+          <Col>
+            <div className="d-grid gap-2">
+              <textarea
+                name="DNAQueryForm"
+                onChange={handleNewDNAQuery}
+                value={newDNAQuery}
+                className="dna-query"
+              />
+            </div>
+          </Col>
+          <Col>
+            <p>Please enter your DNA query in the text field below.</p>
+            <p>Note: only ACTG in upper or lower case is allowed.</p>
+            <Button disabled={!newDNAQuery} onClick={handleSubmit} size="sm">
+              Submit DNA
+            </Button>
+          </Col>
+        </Row>
+      </Container>
 
       {alignmentRequests.length > 0 && (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <td>ID</td>
-              <td>DNA String</td>
-              <td>Status</td>
-              <td>Date Submitted</td>
-              <td>Date Updated</td>
-            </tr>
-          </thead>
-          <tbody>
-            {alignmentRequests.map((request) => {
-              return (
-                <tr
-                  onClick={() => {
-                    location.href = "/detail/" + request.id;
-                  }}
-                >
-                  <td>{request.id}</td>
-                  <td className="dna">{request.dna_string}</td>
-                  <td>{request.status}</td>
-                  <td>{request.date_submitted}</td>
-                  <td>{request.date_updated}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
+        <div className="dna-table">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <td>ID</td>
+                <td>DNA String</td>
+                <td>Status</td>
+                <td>Date Submitted</td>
+                <td>Date Updated</td>
+                <td>Actions</td>
+              </tr>
+            </thead>
+            <tbody>
+              {alignmentRequests.map((request) => {
+                return (
+                  <tr key={request.id}>
+                    <td>{request.id}</td>
+                    <td className="dna">{request.dna_string}</td>
+                    <td>{request.status}</td>
+                    <td>{request.date_submitted}</td>
+                    <td>{request.date_updated}</td>
+                    <td>
+                      <Button
+                        onClick={() => {
+                          location.href = "/detail/" + request.id;
+                        }}
+                      >
+                        Details
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
+        </div>
       )}
-    </Stack>
+    </>
   );
 }
 

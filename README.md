@@ -1,9 +1,16 @@
 # ginkgo
 
-Questions: 
 
-1. The NIH notes that NC_023640 has been replaced by NC_016072
-2. Do I need some auth system for users?
+TODOs:
+add typescript hinting to react code
+deploy to aws the easy way
+deploy to aws using github
+
+hot loading of js would be nice
+hot loading of python would be nice
+
+
+
 
 
 

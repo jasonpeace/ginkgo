@@ -3,11 +3,11 @@ version: "3.8"
 services:
   app:
     build: ./app
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:80
     volumes:
       - ./app/:/usr/src/app/
     ports:
-      - 8000:8000
+      - 80:80
     env_file:
       - ./.env.dev
     depends_on:

@@ -15,7 +15,7 @@ function RequestDetail() {
   }, [detailId]);
 
   function fetch_details() {
-    fetch("http://127.0.0.1:8000/api/detail/" + detailId, {
+    fetch("/api/detail/" + detailId, {
       method: "GET",
     })
       .then((response) => response.json())

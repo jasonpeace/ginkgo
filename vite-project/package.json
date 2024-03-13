@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build_dev": "tsc && vite build --emptyOutDir --base /static/frontend/dev --outDir ../app/staticfiles/frontend/dev",
+    "build_dev": "tsc && vite build --sourcemap inline --emptyOutDir --base /static/frontend/dev --outDir ../app/staticfiles/frontend/dev",
     "build": "tsc && vite build --base /static/frontend/prod --outDir ../app/staticfiles/frontend/prod",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
@@ -16,7 +16,8 @@
     "react-bootstrap": "^2.10.1",
     "react-cookie": "^7.1.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3"
+    "react-router-dom": "^6.22.3",
+    "usehooks-ts": "^3.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
