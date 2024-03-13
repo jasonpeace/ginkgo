@@ -49,11 +49,17 @@ def score_test():
     query = "ATGGTTCACAATTGCAAAAGTATATTCACTGCAGCAGAAAATGGCCACGACGTTTGTTTGAAAACGCTCATTGAAGCAGGTGCCCCCTTTGACAACGTCGGTGATTCAGGGTGGACCGCGTTGCATTACGCGATTCATTATGATCATACTGCGTGCGTAAAGATGCTCATTGATGCGGGTGCAAATATTGACATCACAGATAATTCGGGATGCACACCACTTCATCGTGCGGTTTTTAATGGCCATGATGCATGTGTGAAGCTGCTCGTCGAAGCAGGTGCAACTCTTGACGTCATTGATGATACTGGAACCATGCCACTGCATCACGCAGTTTATTATGGTTATGATGCATGCGTAAAGATGCTCATAGAGGCAGGTGCCGGTCTTAACATCGACGGTGATGGGTATGCACCGTTACATTACGCGGTTTATAAAGGTCACGATGTGTGTGTGAAGCTGCTCGTCGAAGCCGGTGCACCCCTTGACATCACAGATATTTCGGGATGCACACCACTTCATCGTGCGGTTTTTAATGGCCACGATGCATGTGCGAGCATGTTAGTCAACAAGATCGTTTCGGAGCGGCCGTTGCGTCCGAGTGAGTTGTGTGTCATACCACAAACATCTGCTGTATTAGGTGATGTGTTGCGAACGACGATGCAGCTTCATGGGCGATCGGAAGCTGCAAAGATCACAGCGCATCTTCCTGTGGGCGCAAGGGATACTCTGCGGACTACTATGCTGTGTTTGAACAGGACCATGGTCCCGAGAGACCTCATTGACAGCATAGTACTCCAATGTGTGTA"
     aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
     aligner.open_gap_score = -10.0
-    gb_file = "../genome_genbank_files/NC_014637.gb"
+    gb_file = "../app/genome_genbank_files/NC_000852.gb"
     for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
         for feature in gb_record.features:
             if "protein_id" in feature.qualifiers:
                 target = feature.extract(gb_record.seq)
+
+                print(target.index('AT'))
+                sys.exit()
+
+
+
                 score = aligner.score(target, query)
                 print(score)
                 alignments = aligner.align(target, query)
@@ -71,8 +77,6 @@ def score_test():
 def is_exact_match(alignment):
     a = alignment[1, :]
     b = alignment[0, :]
-    import pdb
-    pdb.set_trace()
     return a==b
 
 
@@ -112,13 +116,13 @@ def align_test():
 
 
 def grab_a_protein_snp():
-    gb_file = "../genome_genbank_files/NC_000852.gb"
-    for gb_record in SeqIO.parse(open(gb_file, "r"), "genbank"):
-        origin_seq = str(gb_record.seq)
-        test_seq = origin_seq[
-            2288-1: 3094 -1
-        ]
-        test_seq = test_seq.upper()
+    gb_file = "../app/genome_genbank_files/NC_000852.gb"
+    opened_file = SeqIO.parse(open(gb_file, "r"), "genbank")
+    for gb_record in opened_file:
+        import pdb
+        pdb.set_trace()
+
+    
         
 
 

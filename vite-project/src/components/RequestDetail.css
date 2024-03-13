@@ -1,0 +1,18 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
+
+.details {
+  font-family: "Roboto Mono";
+  text-align: right;
+  font-size: 9px;
+}
+
+.line {
+    white-space: nowrap;
+}
+
+.dna {
+    width: 200px;
+    word-break:break-all;
+    font-size: 9px;
+    text-align: left;
+}

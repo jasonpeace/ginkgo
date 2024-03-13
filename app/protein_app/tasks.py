@@ -4,7 +4,7 @@ from Bio.Seq import Seq, UndefinedSequenceError
 from Bio.SeqFeature import SeqFeature, SimpleLocation
 from Bio.Align import AlignInfo
 import os
-
+import requests
 
 
 @shared_task()
@@ -13,8 +13,9 @@ def find_filename(path):
     print("Files and directories in '", path, "' :")
     print(dir_list)
 
+
 @shared_task()
-def find_first_match(query, path):
+def find_first_match(query, path, alignment_request_id):
     query = query.upper()
     aligner = Align.PairwiseAligner(match_score=1.0, mode="local")
     aligner.open_gap_score = -5000.0
@@ -27,27 +28,38 @@ def find_first_match(query, path):
             for gb_record in records:
                 for feature in gb_record.features:
                     if "protein_id" in feature.qualifiers:
-                        target = feature.extract(gb_record.seq)
+                        target = str(feature.extract(gb_record.seq))
                         score = aligner.score(target, query)
                         alignments = aligner.align(target, query)
                         num_alignments = len(alignments)
                         if num_alignments == 1 and is_exact_match(alignments[0]):
-                            print("Found a match!")
-                            print("Protein ID: {} from Genome File: {}".format(feature.qualifiers['protein_id'], filename))
-                            print("Alignment:{}".format(str(alignments[0])))
-                            return(feature.qualifiers['protein_id'])
+
+                            alignment_result = {
+                                "protein_id": feature.qualifiers["protein_id"],
+                                "alignment_detail": str(alignments[0]),
+                                "alignment_request_id": alignment_request_id,
+                                "protein_dna_seq": target,
+                                "organism": gb_record.annotations["organism"],
+                                "filename": filename,
+                            }
+                            print(alignment_result)
+                            save_result(alignment_result)
+                            return alignment_result
+
         except UndefinedSequenceError as e:
+            print(e)
             print("File: {} is missing its origin sequence. Skipping.".format(filename))
             continue
-        except:
+        except Exception as e:
+            print(e)
             print("File: {} had an unexpected error. Skipping.".format(filename))
-    
+
 
 def is_exact_match(alignment):
-    a = alignment[1, :]
-    b = alignment[0, :]
-    return a==b #dumb but weeds out alignments with mismatches
-        
+    counts = alignment.counts()
+    return counts.gaps == 0 and counts.mismatches == 0 #should only let an exact match past
 
 
-
+def save_result(data):
+    url = "http://app:8000/api/detail/" + str(data["alignment_request_id"])
+    x = requests.post(url, json=data)

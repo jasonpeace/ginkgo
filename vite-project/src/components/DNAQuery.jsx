@@ -4,6 +4,7 @@ import { Button } from "react-bootstrap";
 import Stack from "react-bootstrap/Stack";
 import Table from "react-bootstrap/Table";
 import React from "react";
+import "./DNAQuery.css";
 
 
 
@@ -81,7 +82,7 @@ function DNAQuery() {
                   }}
                 >
                   <td>{request.id}</td>
-                  <td>{request.dna_string}</td>
+                  <td className="dna">{request.dna_string}</td>
                   <td>{request.status}</td>
                   <td>{request.date_submitted}</td>
                   <td>{request.date_updated}</td>
