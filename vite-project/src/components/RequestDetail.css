@@ -10,9 +10,21 @@
   white-space: nowrap;
 }
 
-.dna {
-  width: 200px;
+.table-dna {
+  width: 500px;
   word-break: break-all;
   font-size: 9px;
   text-align: left;
+}
+
+.table-id {
+  width: 70px;
+}
+
+.table-status {
+  width: 120px;
+}
+
+.table-date {
+  width: 190px;
 }

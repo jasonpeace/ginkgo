@@ -62,10 +62,18 @@ function RequestDetail() {
           </thead>
           <tbody>
             <tr>
-              <td  className="dna">{details.alignment_request.dna_string}</td>
-              <td>{details.alignment_request.status}</td>
-              <td>{details.alignment_request.date_submitted}</td>
-              <td>{details.alignment_request.date_updated}</td>
+              <td className="table-dna">
+                {details.alignment_request.dna_string}
+              </td>
+              <td className="table-status">
+                {details.alignment_request.status}
+              </td>
+              <td className="table-date">
+                {details.alignment_request.date_submitted}
+              </td>
+              <td className="table-date">
+                {details.alignment_request.date_updated}
+              </td>
             </tr>
           </tbody>
         </Table>
@@ -89,7 +97,9 @@ function RequestDetail() {
                   details.alignment_results.alignment_detail
                 )}
               </td>
-              <td className="dna">{details.alignment_results.protein_dna_seq}</td>
+              <td className="table-dna">
+                {details.alignment_results.protein_dna_seq}
+              </td>
               <td>{details.alignment_results.organism}</td>
               <td>{details.alignment_results.filename}</td>
             </tr>

@@ -80,7 +80,7 @@ function DNAQuery() {
             </div>
           </Col>
           <Col>
-            <p>Please enter your DNA query in the text field below.</p>
+            <p>Please enter your DNA query in the text field to the left.</p>
             <p>Note: only ACTG in upper or lower case is allowed.</p>
             <Button disabled={!newDNAQuery} onClick={handleSubmit} size="sm">
               Submit DNA
@@ -106,11 +106,11 @@ function DNAQuery() {
               {alignmentRequests.map((request) => {
                 return (
                   <tr key={request.id}>
-                    <td>{request.id}</td>
-                    <td className="dna">{request.dna_string}</td>
-                    <td>{request.status}</td>
-                    <td>{request.date_submitted}</td>
-                    <td>{request.date_updated}</td>
+                    <td className="table-id">{request.id}</td>
+                    <td className="table-dna">{request.dna_string}</td>
+                    <td className="table-status">{request.status}</td>
+                    <td className="table-date">{request.date_submitted}</td>
+                    <td className="table-date">{request.date_updated}</td>
                     <td>
                       <Button
                         onClick={() => {
