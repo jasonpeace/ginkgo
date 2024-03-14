@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Table from "react-bootstrap/Table";
 import React from "react";
+import { useInterval } from "useHooks-ts";
 import "./RequestDetail.css";
 
 function RequestDetail() {
@@ -13,6 +14,14 @@ function RequestDetail() {
   useEffect(() => {
     fetch_details();
   }, [detailId]);
+
+  // grabs the details every 30 seconds until the results load
+  useInterval(
+    () => {
+      fetch_details();
+    },
+    details && details.hasOwnProperty("alignment_results") ? null : 30000
+  );
 
   function fetch_details() {
     fetch("/api/detail/" + detailId, {
@@ -51,60 +60,64 @@ function RequestDetail() {
   return (
     <>
       {details && (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <td>DNA Query</td>
-              <td>Status</td>
-              <td>Date Submitted</td>
-              <td>Date Updated</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="table-dna">
-                {details.alignment_request.dna_string}
-              </td>
-              <td className="table-status">
-                {details.alignment_request.status}
-              </td>
-              <td className="table-date">
-                {details.alignment_request.date_submitted}
-              </td>
-              <td className="table-date">
-                {details.alignment_request.date_updated}
-              </td>
-            </tr>
-          </tbody>
-        </Table>
+        <div className="table-squish">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <td>DNA Query</td>
+                <td>Status</td>
+                <td>Date Submitted</td>
+                <td>Date Updated</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="table-dna">
+                  {details.alignment_request.dna_string}
+                </td>
+                <td className="table-status">
+                  {details.alignment_request.status}
+                </td>
+                <td className="table-date">
+                  {details.alignment_request.date_submitted}
+                </td>
+                <td className="table-date">
+                  {details.alignment_request.date_updated}
+                </td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
       )}
-      {details && details.alignment_results.hasOwnProperty("protein_id") && (
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <td>Protein id</td>
-              <td>Alignment Result</td>
-              <td>Protein DNA Target</td>
-              <td>Organism</td>
-              <td>Filename</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{details.alignment_results.protein_id}</td>
-              <td className="details">
-                {format_alignment_detail(
-                  details.alignment_results.alignment_detail
-                )}
-              </td>
-              <td className="table-dna">
-                {details.alignment_results.protein_dna_seq}
-              </td>
-              <td>{details.alignment_results.organism}</td>
-              <td>{details.alignment_results.filename}</td>
-            </tr>
-          </tbody>
-        </Table>
+      {details && details.hasOwnProperty("alignment_results") && (
+        <div className="table-squish">
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <td>Protein id</td>
+                <td>Alignment Result</td>
+                <td>Protein DNA Target</td>
+                <td>Organism</td>
+                <td>Filename</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{details.alignment_results.protein_id}</td>
+                <td className="details">
+                  {format_alignment_detail(
+                    details.alignment_results.alignment_detail
+                  )}
+                </td>
+                <td className="table-dna">
+                  {details.alignment_results.protein_dna_seq}
+                </td>
+                <td>{details.alignment_results.organism}</td>
+                <td>{details.alignment_results.filename}</td>
+              </tr>
+            </tbody>
+          </Table>
+        </div>
       )}
     </>
   );

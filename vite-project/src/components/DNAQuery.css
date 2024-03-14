@@ -1,5 +1,4 @@
 .table-dna {
-  width: 500px;
   word-break: break-all;
   font-size: 9px;
   text-align: left;
@@ -7,23 +6,23 @@
 
 .table-id {
   width: 70px;
-
 }
 
 .table-status {
   width: 120px;
-
 }
 
 .table-date {
   width: 190px;
+}
 
+.table-actions {
+  width: 100px;
 }
 
 .dna-table {
   width: 100%;
   padding-top: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
-
-
-

@@ -1,7 +1,7 @@
-from django.test import TestCase
 import unittest
-from .alignment import is_exact_match, get_aligner, search_for_match
-from.models import AlignmentRequest, AlignmentResult
+from django.test import TestCase
+from protein_app.modules.alignment import is_exact_match, get_aligner, search_for_match
+from .models import AlignmentRequest, AlignmentResult
 
 # just adding tests here for now.
 

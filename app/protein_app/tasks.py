@@ -1,5 +1,5 @@
 from celery import shared_task
-from .alignment import find_first_match
+from protein_app.modules.alignment import find_first_match
 
 
 @shared_task()

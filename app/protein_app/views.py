@@ -3,12 +3,12 @@ from django.core import serializers
 from django.shortcuts import render, HttpResponse
 from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
-from .utils import (
+from protein_app.modules.utils import (
     alignment_request_dto,
     alignment_requests_dto,
     alignment_result_dto,
 )
-from protein_app.models import AlignmentRequest, AlignmentResult
+from .models import AlignmentRequest, AlignmentResult
 from .tasks import alignment_match
 
 

@@ -111,7 +111,7 @@ function DNAQuery() {
                     <td className="table-status">{request.status}</td>
                     <td className="table-date">{request.date_submitted}</td>
                     <td className="table-date">{request.date_updated}</td>
-                    <td>
+                    <td className="table-actions">
                       <Button
                         onClick={() => {
                           location.href = "/detail/" + request.id;
