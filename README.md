@@ -101,12 +101,6 @@ see the python changes but to also allow vite to run in watch mode so react chan
 
 
 
-TODOs:
-add typescript hinting to react code
-look at material ui
-repush code of course
-
-
 
 
 
