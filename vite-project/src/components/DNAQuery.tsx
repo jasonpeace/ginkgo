@@ -5,12 +5,19 @@ import Table from "react-bootstrap/Table";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import React from "react";
 import { useInterval } from "useHooks-ts";
 import "./DNAQuery.css";
 
+type AlignmentRequest = {
+  id: number
+  dna_string: string
+  status: string
+  date_submitted: string
+  date_updated: string
+}
+
 function DNAQuery() {
-  const [newDNAQuery, setNewDNAQuery] = useState();
+  const [newDNAQuery, setNewDNAQuery] = useState<string>();
   const [alignmentRequests, setAlignmentRequests] = useState([]);
 
   //Fetch the initial data for the DNA Query Table
@@ -31,18 +38,17 @@ function DNAQuery() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setAlignmentRequests(data);
       });
   }
 
-  function handleNewDNAQuery(event) {
-    const data = event.target.value;
-    limited_data = extract(data, "[actgACTG]+");
+  function handleNewDNAQuery(event: React.ChangeEvent<HTMLTextAreaElement>) {
+    const data: string = event.target.value;
+    const limited_data: string = extract(data, "[actgACTG]+");
     setNewDNAQuery(limited_data);
   }
 
-  const extract = (str, pattern) => (str.match(pattern) || []).pop() || "";
+  const extract = (str:string, pattern:string) => (str.match(pattern) || []).pop() || "";
 
   //When the user hits submit, this takes the DNA query and sends it to the backend.
   //This will refresh the DNA Query Table.
@@ -55,10 +61,9 @@ function DNAQuery() {
       },
       body: JSON.stringify({ dna_string: newDNAQuery }),
     })
-      .then(function (res) {
+      .then(function () {
         setNewDNAQuery("");
         fetch_all_alignment_requests();
-        console.log(res);
       })
       .catch(function (res) {
         console.log(res);
@@ -89,6 +94,8 @@ function DNAQuery() {
         </Row>
       </Container>
 
+      
+
       {alignmentRequests.length > 0 && (
         <div className="dna-table">
           <Table striped bordered hover>
@@ -103,7 +110,7 @@ function DNAQuery() {
               </tr>
             </thead>
             <tbody>
-              {alignmentRequests.map((request) => {
+              {alignmentRequests.map((request:AlignmentRequest) => {
                 return (
                   <tr key={request.id}>
                     <td className="table-id">{request.id}</td>

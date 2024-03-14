@@ -1,29 +1,48 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Table from "react-bootstrap/Table";
-import React from "react";
 import { useInterval } from "useHooks-ts";
 import "./RequestDetail.css";
 
+type DetailsType = {
+  alignment_request: AlignmentRequestType;
+  alignment_results?: AlignmentResultType;
+};
+
+type AlignmentRequestType = {
+  dna_string: string;
+  status: string;
+  date_submitted: string;
+  date_updated: string;
+};
+
+type AlignmentResultType = {
+  protein_id: string;
+  alignment_detail: string;
+  protein_dna_seq: string;
+  organism: string;
+  filename: string;
+};
+
 function RequestDetail() {
   let { id } = useParams();
-  const [details, setDetails] = useState();
-  const [result, setResult] = useState();
+  const [details, setDetails] = useState<DetailsType | undefined>();
   const [detailId, setDetailId] = useState(id);
-  const [showWarning, setShowWarning] = useState(false);
-  const [showResults, setShowResults] = useState(false);
+  const [showWarning, setShowWarning] = useState<boolean | undefined>(false);
+  const [showResults, setShowResults] = useState<boolean | undefined>(false);
 
   useEffect(() => {
     fetch_details();
   }, [detailId]);
 
   useEffect(() => {
-    const sw =
+    const sw: boolean | undefined =
       details &&
       details.alignment_request.status === "COMPLETE" &&
       !details.hasOwnProperty("alignment_results");
     setShowWarning(sw);
-    const sr = details && details.hasOwnProperty("alignment_results");
+    const sr: boolean | undefined =
+      details && details.hasOwnProperty("alignment_results");
     setShowResults(sr);
   }, [details]);
 
@@ -41,17 +60,16 @@ function RequestDetail() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setDetails(data);
       });
   }
 
-  function format_alignment_detail(details) {
+  function format_alignment_detail(details:string|undefined) {
     if (details) {
-      lines = details.split("\n");
+      const lines:Array<string> = details.split("\n");
       return (
         <>
-          {lines.map((line) => {
+          {lines.map((line:string) => {
             return <p className="line">{line}</p>;
           })}
         </>
@@ -92,8 +110,8 @@ function RequestDetail() {
         </div>
       )}
       {showWarning && (
-          <h3 className="no-match">No match was found for this query.</h3>
-        )}
+        <h3 className="no-match">No match was found for this query.</h3>
+      )}
       {showResults && (
         <div className="table-squish">
           <Table striped bordered hover>
@@ -108,17 +126,17 @@ function RequestDetail() {
             </thead>
             <tbody>
               <tr>
-                <td>{details.alignment_results.protein_id}</td>
+                <td>{details?.alignment_results?.protein_id}</td>
                 <td className="details">
                   {format_alignment_detail(
-                    details.alignment_results.alignment_detail
+                    details?.alignment_results?.alignment_detail
                   )}
                 </td>
                 <td className="table-dna">
-                  {details.alignment_results.protein_dna_seq}
+                  {details?.alignment_results?.protein_dna_seq}
                 </td>
-                <td>{details.alignment_results.organism}</td>
-                <td>{details.alignment_results.filename}</td>
+                <td>{details?.alignment_results?.organism}</td>
+                <td>{details?.alignment_results?.filename}</td>
               </tr>
             </tbody>
           </Table>

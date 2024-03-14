@@ -1,5 +1,4 @@
 import "./App.css";
-import React from "react";
 import DNAQuery from "./components/DNAQuery";
 import RequestDetail from "./components/RequestDetail";
 
