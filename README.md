@@ -74,7 +74,9 @@ person so the implementation is probably suspect. I've set the open_gap_score to
 alignments returned. Without this, it would often find more than the len(alignments) could even return. In real life, i'd work with a
 scientist or other bioinformatics people to determine the appropriate algorithm. The language in the challenge made it seem like you
 wanted a match without gaps or mismatches so that is what i've attempted to implement. Its probably not the best use of the aligner.
-The code for this can be found in app/protein_app/modules/alignment.py.
+The code for this can be found in app/protein_app/modules/alignment.py. The genomes specified in the challenge were downloaded 
+in a genbank format and stored in their own folder under /app. When the aligner runs, it uses SeqIO to parses these and looks for 
+features that are proteins. Their dna is extracted from the origin/parent and used as the target for the alignment.
 
 #### Vite
 Vite is being used to compile React components into the static dir used by Django. This is configured for more of a SPA style 
