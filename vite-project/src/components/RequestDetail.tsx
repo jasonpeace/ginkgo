@@ -1,7 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useInterval } from "useHooks-ts";
 import { useParams } from "react-router-dom";
 import Table from "react-bootstrap/Table";
-import { useInterval } from "useHooks-ts";
+
 import "./RequestDetail.css";
 
 type DetailsType = {
@@ -64,12 +65,12 @@ function RequestDetail() {
       });
   }
 
-  function format_alignment_detail(details:string|undefined) {
+  function format_alignment_detail(details: string | undefined) {
     if (details) {
-      const lines:Array<string> = details.split("\n");
+      const lines: Array<string> = details.split("\n");
       return (
         <>
-          {lines.map((line:string) => {
+          {lines.map((line: string) => {
             return <p className="line">{line}</p>;
           })}
         </>

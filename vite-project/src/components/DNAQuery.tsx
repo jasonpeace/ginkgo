@@ -1,20 +1,21 @@
-import { useState, useEffect } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import Table from "react-bootstrap/Table";
-import Container from "react-bootstrap/Container";
+import { useInterval } from "useHooks-ts";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { useInterval } from "useHooks-ts";
+import Table from "react-bootstrap/Table";
+import Container from "react-bootstrap/Container";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./DNAQuery.css";
 
 type AlignmentRequest = {
-  id: number
-  dna_string: string
-  status: string
-  date_submitted: string
-  date_updated: string
-}
+  id: number;
+  dna_string: string;
+  status: string;
+  date_submitted: string;
+  date_updated: string;
+};
 
 function DNAQuery() {
   const [newDNAQuery, setNewDNAQuery] = useState<string>();
@@ -48,7 +49,8 @@ function DNAQuery() {
     setNewDNAQuery(limited_data);
   }
 
-  const extract = (str:string, pattern:string) => (str.match(pattern) || []).pop() || "";
+  const extract = (str: string, pattern: string) =>
+    (str.match(pattern) || []).pop() || "";
 
   //When the user hits submit, this takes the DNA query and sends it to the backend.
   //This will refresh the DNA Query Table.
@@ -94,8 +96,6 @@ function DNAQuery() {
         </Row>
       </Container>
 
-      
-
       {alignmentRequests.length > 0 && (
         <div className="dna-table">
           <Table striped bordered hover>
@@ -110,7 +110,7 @@ function DNAQuery() {
               </tr>
             </thead>
             <tbody>
-              {alignmentRequests.map((request:AlignmentRequest) => {
+              {alignmentRequests.map((request: AlignmentRequest) => {
                 return (
                   <tr key={request.id}>
                     <td className="table-id">{request.id}</td>

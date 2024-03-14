@@ -1,19 +1,20 @@
-import "./App.css";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import DNAQuery from "./components/DNAQuery";
 import RequestDetail from "./components/RequestDetail";
 
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
 
 function App() {
-
-  const handleClick = () =>{
+  const handleClick = () => {
     location.href = "/";
-  }
+  };
 
   return (
     <>
       <div className="header">
-        <p className="header-title" onClick={handleClick}>Protein DNA Search</p>
+        <p className="header-title" onClick={handleClick}>
+          Protein DNA Search
+        </p>
       </div>
       <Router>
         <Routes>
