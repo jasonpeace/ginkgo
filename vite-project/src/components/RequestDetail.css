@@ -33,3 +33,7 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.no-match{
+  color: rgb(192, 20, 20)
+}

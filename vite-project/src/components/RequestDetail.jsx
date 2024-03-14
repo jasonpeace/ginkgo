@@ -10,10 +10,22 @@ function RequestDetail() {
   const [details, setDetails] = useState();
   const [result, setResult] = useState();
   const [detailId, setDetailId] = useState(id);
+  const [showWarning, setShowWarning] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     fetch_details();
   }, [detailId]);
+
+  useEffect(() => {
+    const sw =
+      details &&
+      details.alignment_request.status === "COMPLETE" &&
+      !details.hasOwnProperty("alignment_results");
+    setShowWarning(sw);
+    const sr = details && details.hasOwnProperty("alignment_results");
+    setShowResults(sr);
+  }, [details]);
 
   // grabs the details every 30 seconds until the results load
   useInterval(
@@ -32,16 +44,6 @@ function RequestDetail() {
         console.log(data);
         setDetails(data);
       });
-  }
-
-  function handleUpdateRequest(data) {
-    setRequest(data);
-    console.log(data);
-  }
-
-  function handleUpdateResult(data) {
-    setResult(data);
-    console.log(data);
   }
 
   function format_alignment_detail(details) {
@@ -89,7 +91,10 @@ function RequestDetail() {
           </Table>
         </div>
       )}
-      {details && details.hasOwnProperty("alignment_results") && (
+      {showWarning && (
+          <h3 className="no-match">No match was found for this query.</h3>
+        )}
+      {showResults && (
         <div className="table-squish">
           <Table striped bordered hover>
             <thead>

@@ -128,6 +128,10 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+
+.no-match{
+  color: rgb(192, 20, 20)
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;

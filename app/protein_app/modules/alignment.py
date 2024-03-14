@@ -31,6 +31,8 @@ def find_first_match(query: str, path: str, alignment_request_id: int) -> dict:
     alignment_result = search_for_match(
         query, alignment_request_id, file_list, path, aligner
     )
+    if not alignment_result:
+        alignment_result = {"alignment_request_id":alignment_request_id}
     save_result(alignment_result)
     return alignment_result
 

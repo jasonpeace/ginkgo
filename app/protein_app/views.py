@@ -92,7 +92,11 @@ def alignment_detail(request: HttpRequest, alignment_request_id: int = -1) -> Ht
         alignment_request = AlignmentRequest.objects.get(
             pk=data["alignment_request_id"]
         )
-        if data:
+        alignment_request.status = "COMPLETE"
+        alignment_request.save()
+
+        if "protein_id" in data:
+            # we found an alignment
             alignment_result = AlignmentResult(
                 protein_id=data["protein_id"],
                 alignment_detail=data.get("alignment_detail", "No alignment details"),
@@ -102,7 +106,11 @@ def alignment_detail(request: HttpRequest, alignment_request_id: int = -1) -> Ht
                 filename=data.get("filename"),
             )
             alignment_result.save()
-        alignment_request.status = "COMPLETE"
-        alignment_request.save()
-        ar = json.dumps(alignment_request_dto(alignment_request))
-        return HttpResponse(ar, content_type="application/json")
+            ar = json.dumps(alignment_request_dto(alignment_request))
+            return HttpResponse(ar, content_type="application/json")
+        else:
+            # no alignment found
+            return HttpResponse({""}, content_type="application/json")
+            
+        
+        
