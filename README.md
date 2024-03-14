@@ -47,6 +47,8 @@ Genome List:
 - Celery/Redis for the task runner
 - Postgres for the DB
 
+To run the code, pull the repo locally and run docker-compose build; docker-compose up.
+
 #### Workflow
 Upon loading the homepage at 127.0.0.1 or whatever IP the deployed code is runing on, the user will be taken to the home page.
 The home page consists of a text area for submitting DNA queries and if there is any data, a table that shows what was entered,
