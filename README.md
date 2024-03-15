@@ -47,7 +47,8 @@ Genome List:
 - Celery/Redis for the task runner
 - Postgres for the DB
 
-To run the code, pull the repo locally and run docker-compose build; docker-compose up.
+To run the code, pull the repo locally. Rename ".env.dev.sample" to ".env.dev". Replace the dummy values inside. These are environment 
+vars used by the django settings file. Its configued in the docker-compose file. Then run "docker-compose build; docker-compose up".
 
 #### Workflow
 Upon loading the homepage at 127.0.0.1 or whatever IP the deployed code is runing on, the user will be taken to the home page.
