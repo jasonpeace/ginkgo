@@ -25,6 +25,9 @@ type AlignmentResultType = {
   filename: string;
 };
 
+/*                              
+RequestDetail - component for showing the details of a single alignment request and its result.
+*/
 function RequestDetail() {
   let { id } = useParams();
   const [details, setDetails] = useState<DetailsType | undefined>();
@@ -32,10 +35,12 @@ function RequestDetail() {
   const [showWarning, setShowWarning] = useState<boolean | undefined>(false);
   const [showResults, setShowResults] = useState<boolean | undefined>(false);
 
+  //loads the initial details
   useEffect(() => {
     fetch_details();
   }, [detailId]);
 
+  //sets some state to determine if we show a message to the user and the results table
   useEffect(() => {
     const sw: boolean | undefined =
       details &&
@@ -55,6 +60,7 @@ function RequestDetail() {
     details && details.hasOwnProperty("alignment_results") ? null : 30000
   );
 
+
   function fetch_details() {
     fetch("/api/detail/" + detailId, {
       method: "GET",
@@ -65,6 +71,7 @@ function RequestDetail() {
       });
   }
 
+  //this takes the alignment details and formats it for display so it looks similar to the ascii representation
   function format_alignment_detail(details: string | undefined) {
     if (details) {
       const lines: Array<string> = details.split("\n");
@@ -77,11 +84,12 @@ function RequestDetail() {
       );
     }
   }
-
   return (
     <>
       {details && (
+        
         <div className="table-squish">
+          <a className="back" href="/">&lt; Back</a>
           <Table striped bordered hover>
             <thead>
               <tr>

@@ -17,6 +17,9 @@ type AlignmentRequest = {
   date_updated: string;
 };
 
+/*                              
+DNAQuery - component for entering a dna query string and display of previous/new requests
+*/
 function DNAQuery() {
   const [newDNAQuery, setNewDNAQuery] = useState<string>();
   const [alignmentRequests, setAlignmentRequests] = useState([]);
@@ -43,12 +46,14 @@ function DNAQuery() {
       });
   }
 
+  //Hanlder for a new DNA query - this limits for DNA nucleotide characters 
   function handleNewDNAQuery(event: React.ChangeEvent<HTMLTextAreaElement>) {
     const data: string = event.target.value;
     const limited_data: string = extract(data, "[actgACTG]+");
     setNewDNAQuery(limited_data);
   }
 
+  //function used to extract chars from a string based on a pattern
   const extract = (str: string, pattern: string) =>
     (str.match(pattern) || []).pop() || "";
 
