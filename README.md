@@ -95,7 +95,9 @@ for production.
 
 As the challenge mentions, this is a place to start from which we could improve. There are obvious next steps.
 
-- Add users and permissions 
+- Add users and permissions
+- With users, we could filter the table on previous alignment requests
+- the alignment request table will need pagination 
 - Tune the alignment algorithm to be more useful
 - expand the interface to allow configuring the aligner properties while also adding some guardrails to keep the alignment numbers
 reasonable
